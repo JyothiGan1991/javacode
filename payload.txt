@@ -1,0 +1,87 @@
+{
+  "payload": {
+    "eventId": "1404f777-1234-1234-a44c-42df438a85e5",
+    "eventTime": "2025-11-14T15:55:37.756Z",
+    "eventSource": "FMS",
+    "eventName": "ORDER_SHIPMENT_UPDATE",
+    "eventPayload": {
+      "buId": "0",
+      "shipmentDetails": [
+        {
+          "actualShipmentDate": "2025-11-14T15:55:37.756Z",
+          "carrier": "LMD_SameDay",
+          "trackingNo": "28021609031961822018",
+          "packageDetail": {
+            "length": {
+              "measurementValue": 10,
+              "unitOfMeasure": "IN"
+            },
+            "width": {
+              "measurementValue": 7,
+              "unitOfMeasure": "IN"
+            },
+"weight": {
+              "measurementValue": 0.1,
+              "unitOfMeasure": "LB"
+            },
+            "height": {
+              "measurementValue": 12,
+              "unitOfMeasure": "IN"
+            }
+          },
+          "shipmentNo": "ac2b4aa5-1234-3301-3302-d171ea365c44",
+          "carrierServiceCode": "3996"
+        }
+      ],
+      "references": [
+        {
+          "name": "purchaseOrderNo",
+          "value": "609031961822018"
+        }
+      ],
+      "fulfillmentReqId": "MCF_MX|100001142750218",
+      "orderChannelId": "DABC510017E011EBADC10242AC120002",
+      "lineItemStatus": [
+        {
+          "sellerLineId": "1",
+          "itemStatus": [
+            {
+Messages addressed to "meeting group chat" will also appear in the meeting group chat in Team Chat
+
+Akhil Reddy C 20:08
+"totalQty": {
+                "measurementValue": 1,
+                "unitOfMeasure": "EA"
+              },
+              "shipNode": "28021",
+              "expectedDeliveryDate": "2025-11-14T19:00:00.000Z",
+              "expectedShipDate": "2025-11-14T19:30:00.000Z",
+              "modifiedDate": "2025-11-14T17:02:52.544Z",
+              "statusDetail": "Shipped",
+              "shipmentInfo": [
+                {
+                  "quantity": {
+                    "measurementValue": 1,
+                    "unitOfMeasure": "EA"
+                  },
+                  "shipmentNo": "ac2b4aa5-1234-3301-3302-d171ea365c44"
+                }
+              ],
+"status": "SHIPPED"
+            }
+          ]
+        }
+      ],
+      "martId": "1007",
+      "sellerOrderId": "100001142750218"
+    }
+  },
+  "header": {
+    "buId": "0",
+    "eventId": "1404f777-1234-1234-a44c-42df438a85e5",
+    "eventSource": "FMS",
+    "eventTime": "2025-11-14T17:02:53.182+00:00",
+    "eventType": "ORDER_SHIPMENT_UPDATE",
+    "martId": "1007"
+  }
+}
