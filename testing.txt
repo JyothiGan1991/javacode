@@ -1,0 +1,2 @@
+SELECT *
+FROM nmsmodelextract.circuitschanged_fornmsfileextract_fn(30);
