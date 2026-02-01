@@ -14,7 +14,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
             '44-3A-13','44-3B-13','44-3-13'
           ]
       )
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -29,7 +29,7 @@ JOIN ed.connection c
      SELECT DISTINCT a.fid
      FROM ed.audit a
      JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-     WHERE (now() - a.date) <= p_interval
+     WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
        AND o.designdstat::text = 'Open'
  )
 JOIN asset_ed.ed_circuitbreaker b
@@ -50,7 +50,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
     FROM asset_ed.circuit_feature c
     JOIN ed.audit a ON c.fid = a.fid
     WHERE c.circuit::text = ANY (ARRAY['44-5A-13','44-5B-13'])
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -61,7 +61,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
     FROM asset_ed.circuit_feature c
     JOIN ed.audit a ON c.fid = a.fid
     WHERE c.circuit::text = ANY (ARRAY['44-3A-13','44-3B-13'])
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -73,7 +73,7 @@ WHERE c.fidb IN (
     SELECT DISTINCT a.fid
     FROM ed.audit a
     JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-    WHERE (now() - a.date) <= p_interval
+    WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
       AND o.designdstat::text = 'Open'
 )
 AND p.circuit::text = ANY (ARRAY['44-5A-13','44-5B-13'])
@@ -87,7 +87,7 @@ WHERE c.fidb IN (
     SELECT DISTINCT a.fid
     FROM ed.audit a
     JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-    WHERE (now() - a.date) <= p_interval
+    WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
       AND o.designdstat::text = 'Open'
 )
 AND p.circuit::text = ANY (ARRAY['44-3A-13','44-3B-13'])
@@ -100,7 +100,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
     FROM asset_ed.circuit_feature c
     JOIN ed.audit a ON c.fid = a.fid
     WHERE c.circuit::text = ANY (ARRAY['3-1N-34','3-1S-34'])
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -112,7 +112,7 @@ WHERE c.fidb IN (
     SELECT DISTINCT a.fid
     FROM ed.audit a
     JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-    WHERE (now() - a.date) <= p_interval
+    WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
       AND o.designdstat::text = 'Open'
 )
 AND p.circuit::text = ANY (ARRAY['3-1N-34','3-1S-34'])
@@ -125,7 +125,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
     FROM asset_ed.circuit_feature c
     JOIN ed.audit a ON c.fid = a.fid
     WHERE c.circuit::text = ANY (ARRAY['128M-1-13','128M-2-13'])
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -137,7 +137,7 @@ WHERE c.fidb IN (
     SELECT DISTINCT a.fid
     FROM ed.audit a
     JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-    WHERE (now() - a.date) <= p_interval
+    WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
       AND o.designdstat::text = 'Open'
 )
 AND p.circuit::text = ANY (ARRAY['128M-1-13','128M-2-13'])
@@ -150,7 +150,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
     FROM asset_ed.circuit_feature c
     JOIN ed.audit a ON c.fid = a.fid
     WHERE c.circuit::text = ANY (ARRAY['129M-1-13','129M-2-13'])
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -162,7 +162,7 @@ WHERE c.fidb IN (
     SELECT DISTINCT a.fid
     FROM ed.audit a
     JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-    WHERE (now() - a.date) <= p_interval
+    WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
       AND o.designdstat::text = 'Open'
 )
 AND p.circuit::text = ANY (ARRAY['129M-1-13','129M-2-13'])
@@ -175,7 +175,7 @@ WHERE ed_circuitbreaker.circuit::text IN (
     FROM asset_ed.circuit_feature c
     JOIN ed.audit a ON c.fid = a.fid
     WHERE c.circuit::text = ANY (ARRAY['9-T1-13','9-T5-13'])
-      AND a.date > (now() - p_interval)
+      AND a.date > (now() - (p_minutes * INTERVAL '1 minute'))
 )
 
 UNION
@@ -187,7 +187,7 @@ WHERE c.fidb IN (
     SELECT DISTINCT a.fid
     FROM ed.audit a
     JOIN asset_ed.ed_ohd o ON a.fid = o.fid
-    WHERE (now() - a.date) <= p_interval
+    WHERE (now() - a.date) <= (p_minutes * INTERVAL '1 minute')
       AND o.designdstat::text = 'Open'
 )
 AND p.circuit::text = ANY (ARRAY['9-T1-13','9-T5-13'])
