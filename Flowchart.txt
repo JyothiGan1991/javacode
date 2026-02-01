@@ -1,0 +1,57 @@
+┌────────────┐
+│    UI      │
+│ (Browser)  │
+└─────┬──────┘
+      │
+      │ HTTP GET Request
+      │ (e.g. /api/circuits)
+      ▼
+┌──────────────────────┐
+│ Spring Boot Controller│
+│ (REST API Endpoint)  │
+└─────┬────────────────┘
+      │
+      │ Calls Service Layer
+      ▼
+┌──────────────────────┐
+│ Service Layer        │
+│ (Business Logic)     │
+└─────┬────────────────┘
+      │
+      │ Calls Repository / DAO
+      ▼
+┌──────────────────────┐
+│ Repository / DAO     │
+│ (Data Access Layer)  │
+└─────┬────────────────┘
+      │
+      │ Invokes DB Function
+      ▼
+┌──────────────────────┐
+│ Database             │
+│ (DB Function)        │
+└─────┬────────────────┘
+      │
+      │ Returns Result Set
+      ▼
+┌──────────────────────┐
+│ Repository / DAO     │
+└─────┬────────────────┘
+      │
+      ▼
+┌──────────────────────┐
+│ Service Layer        │
+└─────┬────────────────┘
+      │
+      ▼
+┌──────────────────────┐
+│ Controller           │
+│ (JSON Response)      │
+└─────┬────────────────┘
+      │
+      ▼
+┌────────────┐
+│    UI      │
+│ (Table/Grid│
+│  Rendering)│
+└────────────┘
