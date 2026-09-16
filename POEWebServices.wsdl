@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="POEWebServicesService" targetNamespace="http://poe.oru.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://poe.oru.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://poe.oru.com/" xmlns:tns="http://poe.oru.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="incidentCount" type="tns:incidentCount"/>
+<xs:element name="incidentCountResponse" type="tns:incidentCountResponse"/>
+<xs:element name="isGasMain" type="tns:isGasMain"/>
+<xs:element name="isGasMainResponse" type="tns:isGasMainResponse"/>
+<xs:element name="verifyPole" type="tns:verifyPole"/>
+<xs:element name="verifyPoleResponse" type="tns:verifyPoleResponse"/>
+<xs:complexType name="isGasMain">
+<xs:sequence>
+<xs:element minOccurs="0" name="Premise" type="xs:string"/>
+<xs:element name="Radius" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="isGasMainResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="verifyPole">
+<xs:sequence>
+<xs:element name="X" type="xs:int"/>
+<xs:element name="Y" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="verifyPoleResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="incidentCount">
+<xs:sequence>
+<xs:element minOccurs="0" name="StartDate" type="xs:string"/>
+<xs:element minOccurs="0" name="StartTime" type="xs:string"/>
+<xs:element minOccurs="0" name="EndDate" type="xs:string"/>
+<xs:element minOccurs="0" name="EndTime" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+<xs:complexType name="incidentCountResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+<xs:element name="POEServiceException" type="tns:POEServiceException"/>
+<xs:complexType name="POEServiceException">
+<xs:sequence/>
+</xs:complexType>
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="incidentCount">
+    <wsdl:part name="parameters" element="tns:incidentCount">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="verifyPole">
+    <wsdl:part name="parameters" element="tns:verifyPole">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="verifyPoleResponse">
+    <wsdl:part name="parameters" element="tns:verifyPoleResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="incidentCountResponse">
+    <wsdl:part name="parameters" element="tns:incidentCountResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isGasMainResponse">
+    <wsdl:part name="parameters" element="tns:isGasMainResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isGasMain">
+    <wsdl:part name="parameters" element="tns:isGasMain">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="POEServiceException">
+    <wsdl:part name="POEServiceException" element="tns:POEServiceException">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="POEWebServicesSEI">
+    <wsdl:operation name="isGasMain">
+      <wsdl:input name="isGasMain" message="tns:isGasMain">
+    </wsdl:input>
+      <wsdl:output name="isGasMainResponse" message="tns:isGasMainResponse">
+    </wsdl:output>
+      <wsdl:fault name="POEServiceException" message="tns:POEServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="verifyPole">
+      <wsdl:input name="verifyPole" message="tns:verifyPole">
+    </wsdl:input>
+      <wsdl:output name="verifyPoleResponse" message="tns:verifyPoleResponse">
+    </wsdl:output>
+      <wsdl:fault name="POEServiceException" message="tns:POEServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="incidentCount">
+      <wsdl:input name="incidentCount" message="tns:incidentCount">
+    </wsdl:input>
+      <wsdl:output name="incidentCountResponse" message="tns:incidentCountResponse">
+    </wsdl:output>
+      <wsdl:fault name="POEServiceException" message="tns:POEServiceException">
+    </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="POEWebServicesServiceSoapBinding" type="tns:POEWebServicesSEI">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="isGasMain">
+      <soap:operation soapAction="urn:IsGasMain" style="document"/>
+      <wsdl:input name="isGasMain">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="isGasMainResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="POEServiceException">
+        <soap:fault name="POEServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="verifyPole">
+      <soap:operation soapAction="urn:VerifyPole" style="document"/>
+      <wsdl:input name="verifyPole">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="verifyPoleResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="POEServiceException">
+        <soap:fault name="POEServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+    <wsdl:operation name="incidentCount">
+      <soap:operation soapAction="urn:IncidentCount" style="document"/>
+      <wsdl:input name="incidentCount">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="incidentCountResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+      <wsdl:fault name="POEServiceException">
+        <soap:fault name="POEServiceException" use="literal"/>
+      </wsdl:fault>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="POEWebServicesService">
+    <wsdl:port name="POEWebServicesPort" binding="tns:POEWebServicesServiceSoapBinding">
+      <soap:address location="http://localhost:8080/poeWebServices/services/POEWebServicesPort"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
