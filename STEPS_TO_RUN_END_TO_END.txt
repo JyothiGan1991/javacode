@@ -1,0 +1,218 @@
+================================================================================
+  AMI Load Shed – NMS Ticket Creation Enhancement
+  End-to-End Setup & Run Guide
+================================================================================
+
+1. PREREQUISITES
+----------------
+   - JDK 8 or higher (project was built with Java 8 / Spring Boot 2.3.2)
+   - Maven 3.6+
+   - Network access to:
+        * Oracle database (stardevdb:1521:stardl23 or your environment)
+        * AMM / HES mock or real services
+        * NMS endpoint (currently pointing to a dummy URL)
+   - Oracle JDBC driver is already declared in pom.xml (ojdbc8)
+
+2. PROJECT STRUCTURE (key new / changed files)
+----------------------------------------------
+   src/main/java/com/coned/ls/service/NmsTicketService.java   ← NEW
+   src/main/java/com/coned/ls/service/RemoteOperationService.java  ← modified
+   src/main/java/com/coned/ls/domain/Meter.java               ← modified
+   src/main/java/com/coned/ls/repository/MeterRowMapper.java  ← modified
+   src/main/resources/application.properties                 ← NMS config added
+   src/main/resources/queries.properties                     ← EVENT_NAME added
+   src/main/resources/queries_be.properties                  ← EVENT_NAME added
+
+3. CONFIGURE THE APPLICATION
+----------------------------
+   Edit:  src/main/resources/application.properties
+
+   a) Database connection (already present – update if your env differs)
+        spring.datasource.url=...
+        spring.datasource.username=...
+        spring.datasource.password=...
+
+   b) AMM / HES endpoints (already present – point to real or mock services)
+        amm_disconnect_meter=...
+        amm_connect_meter=...
+
+   c) NMS Ticket Creation settings (NEW – all configurable)
+        # Master on/off switch
+        nms.ticket.enabled=true
+
+        # Create ticket right after disconnect command is sent (recommended for now)
+        nms.ticket.create.on.command.sent=true
+
+        # Replace with real NMS URL when available
+        nms.ticket.create.url=http://nms-dummy.conedison.net:8080/api/outage/create
+        nms.ticket.create.http.method=POST
+
+        # Optional auth
+        nms.ticket.auth.header.name=
+        nms.ticket.auth.header.value=
+
+        # Field names & values – change these to match the real NMS contract
+        nms.ticket.value.clueCode=AMILS
+        nms.ticket.value.workQueue=AMI Load Shed
+        nms.ticket.remarks.template=Customer affected by AMI Load Shed event {eventName}
+
+        # Extra static fields example:
+        # nms.ticket.extra.fields=sourceSystem=AMI_LSA,priority=HIGH
+
+4. BUILD THE PROJECT
+--------------------
+   From the project root (folder that contains pom.xml):
+
+        mvn clean package -DskipTests
+
+   Successful build produces:
+        target/LoadShedding-1.2.jar
+
+5. RUN THE APPLICATION
+----------------------
+   java -jar target/LoadShedding-1.2.jar
+
+   Or with a custom properties file / overrides:
+
+        java -jar target/LoadShedding-1.2.jar \
+             --nms.ticket.create.url=https://real-nms-host/api/outage \
+             --nms.ticket.enabled=true
+
+   The application runs in a continuous loop:
+        - Process meters with null MAC
+        - Disconnect pending meters  →  on success creates NMS AMILS ticket
+        - Update request status
+        - Connect pending meters
+
+6. HOW TICKET CREATION WORKS (current behaviour)
+-----------------------------------------------
+   - After a disconnect command is successfully submitted to HES and a jobId
+     is received, NmsTicketService is called.
+   - All meters that belong to the same REQUEST_IDX share the SAME startTime
+     (the timestamp of the first disconnect command of that batch).
+   - Payload sent to NMS (field names are configurable):
+
+        {
+          "clueCode"   : "AMILS",
+          "workQueue"  : "AMI Load Shed",
+          "remarks"    : "Customer affected by AMI Load Shed event <EventName>",
+          "startTime"  : "2026-11-01T04:50:00Z",
+          "meterNumber": "...",
+          "eventName"  : "...",
+          "eventId"    : "<REQUEST_IDX>",
+          "macAddress" : "...",
+          "requestId"  : "<REQUEST_IDX>",
+          "amiJobId"   : 12345
+        }
+
+   - Failures talking to NMS are logged only; they NEVER stop the load-shed
+     disconnect/connect processing.
+
+7. SWITCHING TO “CREATE ONLY ON SUCCESSFUL AMI JOB”
+---------------------------------------------------
+   If later you decide tickets should be created only after the AMI job
+   status becomes successful (status = 'C'):
+
+        nms.ticket.create.on.command.sent=false
+
+   You will then need a separate process (or an extension of this one) that
+   polls for meters that have just become successful and calls
+   NmsTicketService at that point.
+
+8. VERIFYING THE FEATURE
+------------------------
+   a) Ensure there are pending disconnect records in:
+        AMI_LOAD_SHEDDING.LSB_AOCC_REQUESTS / LSB_AOCC_METERS
+        (REQ_STATUS in ('N','I'), REQUEST_TYPE = 1, STATUS = 'N', MAC_ID not null)
+
+   b) Start the application and watch the logs for lines such as:
+        "Creating AMILS NMS ticket for meter [...]"
+        "NMS ticket creation response for meter [...]: status=..."
+
+   c) Because the default URL is a dummy, you will see connection errors –
+      that is expected until you point nms.ticket.create.url to a real
+      (or mock) NMS endpoint.
+
+9. QUICK MOCK FOR LOCAL TESTING
+-------------------------------
+   You can stand up a simple mock with any tool (WireMock, Postman mock,
+   simple Spring Boot, etc.) that accepts POST /api/outage/create and
+   returns 200. Point the property at that mock to verify the payload.
+
+10. ROLLBACK / DISABLE
+----------------------
+    To completely disable the new feature without code changes:
+
+        nms.ticket.enabled=false
+
+================================================================================
+End of guide
+================================================================================
+============================================================================
+
+
+Queries:
+
+Here are clear, point-wise queries you can copy-paste into email and Teams:
+
+---
+
+**Subject:** AMI Load Shed – NMS Ticket Creation – Clarifications needed for end-to-end implementation
+
+Hi,
+
+We have implemented the AMI Load Shed outage ticket creation feature in a fully configurable way. To make it run end-to-end in the real environment, please provide the following details:
+
+**1. NMS / OMS API details**
+- What is the exact endpoint (URL) to create an outage ticket/call?
+- Is it REST (POST/PUT) or SOAP?
+- What authentication is required (Basic Auth, API key, header name/value, token, etc.)?
+- Please share a sample request payload (or WSDL / Swagger) if available.
+
+**2. Required fields for the outage ticket**
+- Exact field names expected by NMS for:
+  - Clue Code
+  - Work Queue
+  - Remarks / Comments
+  - Event Start Time
+  - Meter Number / Account / Service Point identifier
+  - Event Name
+  - Event ID / Request ID
+- Are there any other mandatory fields (priority, call type, source system, feeder, etc.)?
+
+**3. Clue Code & Work Queue values**
+- Confirm Clue Code should be **AMILS**
+- Exact name/value of the dedicated work queue (currently assumed as **“AMI Load Shed”**)
+
+**4. Remarks format**
+- Confirm the remarks text:  
+  `"Customer affected by AMI Load Shed event <Event Name>"`  
+  (or provide the exact wording required)
+
+**5. Event Start Time**
+- Should the OMS start time be the timestamp when the disconnect command was sent from LSA to HES?
+- Confirm that all meters under the same load-shed batch (same REQUEST_IDX) must share the same start time.
+
+**6. Customer / Meter association**
+- Is Meter Number sufficient to link the ticket to the customer, or do we also need Account Number / Service Point ID / other identifiers?
+- If additional identifiers are required, from which table/column should we fetch them?
+
+**7. Success criteria for creating the ticket**
+- Should the ticket be created:
+  - Immediately after the disconnect command is successfully submitted (jobId received), **or**
+  - Only after the AMI job is confirmed successful (status = ‘C’)?
+
+**8. Storing NMS ticket reference (optional but recommended)**
+- Do we need to store the NMS ticket/call ID back into any LSA table for traceability?
+- If yes, which table and column should be used?
+
+**9. Error handling expectation**
+- If NMS ticket creation fails, should we only log the error and continue (current behaviour), or is any retry / alerting / status update required?
+
+Once the above points are clarified, we can update the configuration and run the feature end-to-end.
+
+Thank you.
+
+---
+
+You can send the same content in Teams as well (or break it into shorter messages if needed). Let me know once you get the answers and I can help you update the configuration.
