@@ -1,0 +1,39 @@
+Key files to use as the template
+
+1. QueueConfig.java – IBM MQ connection + caching + JmsTemplate beans  
+2. CeconyOutageQueuePublisher.java – how the message is built and sent  
+3. application.properties – the connection properties pattern
+
+### Existing IBM MQ pattern (Cecony Outage)
+
+Properties (from `application.properties`)
+
+ibm.mq.cecony.oms.outage.restore.queueManager=MQLXST23T
+ibm.mq.cecony.oms.outage.restore.channel=OMS.CHL.AMI.DEV
+ibm.mq.cecony.oms.outage.restore.connName=stardv23.conedison.net
+ibm.mq.cecony.oms.outage.restore.port=1420
+
+cecony.oms.outage.restore.queue=OMS_CO_OutageRestore
+
+
+### New queues from Surya (parsed from the `mqsc://` strings)
+
+| Env   | Channel            | Host                        | Port | Queue Manager   | Queue            |
+|-------|--------------------|-----------------------------|------|-----------------|------------------|
+| PSC   | CEOMSMQPSC      | ceomsmqqa101.conedison.net | 8916 | MQLXCEOMSPSC  | CIS.TO.BIZTALK |
+| GU    | CEOMSMQGU`       | ceomsmqqa201.conedison.net | 8917 | MQLXCEOMSGU   | CIS.TO.BIZTALK |
+| PROD  | BIZTALK.MQLXCEOMSPD | ceomsmq.conedison.net  | 8915 | MQLXCEOMSPD   | CIS.TO.BIZTALK |
+
+(The first segment after `mqsc://` is the channel, then host(port), queue manager, and the remote queue name.)
+
+
+
+1. Add properties (example for PSC – do the same for GU/PROD or make them environment-specific):
+
+# New CIS.TO.BIZTALK (PSC)
+ibm.mq.cis.to.biztalk.queueManager=MQLXCEOMSPSC
+ibm.mq.cis.to.biztalk.channel=CEOMSMQPSC
+ibm.mq.cis.to.biztalk.connName=ceomsmqqa101.conedison.net
+ibm.mq.cis.to.biztalk.port=8916
+
+cis.to.biztalk.queue=CIS.TO.BIZTALK
